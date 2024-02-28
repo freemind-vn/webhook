@@ -1,4 +1,4 @@
-package helper
+package telegram
 
 import (
 	"bytes"
@@ -7,6 +7,8 @@ import (
 	"io"
 	"net/http"
 	"strings"
+
+	"github.com/rs/zerolog/log"
 )
 
 var specialChars = []string{
@@ -36,8 +38,10 @@ var specialChars = []string{
 func SendTelegramMessage(token string, chatId string, message string) error {
 	url := fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage", token)
 	data := map[string]string{
-		"chat_id": chatId,
-		"text":    escapeTelegramMessage(message),
+		"chat_id":              chatId,
+		"text":                 escapeTelegramMessage(message),
+		"parse_mode":           "MarkdownV2",
+		"disable_notification": "true",
 	}
 
 	buf, err := json.Marshal(data)
@@ -65,7 +69,7 @@ func SendTelegramMessage(token string, chatId string, message string) error {
 		return err
 	}
 
-	fmt.Println(body)
+	log.Info().Msg(string(body))
 	return nil
 }
 

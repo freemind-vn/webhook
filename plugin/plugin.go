@@ -5,5 +5,6 @@ type Plugin interface {
 	Description() string
 	Version() string
 
+	Init(config map[string]any)
 	Run(payload map[string]any) error
 }
